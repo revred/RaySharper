@@ -108,7 +108,7 @@ public class InputAction
         inputs.AddRange(inputTypes);
     }
     
-    public InputAction(uint accessTag, ShapeGamepadDevice gamepad, params IInputType[] inputTypes)
+    public InputAction(uint accessTag, ShapeGamepadDevice? gamepad, params IInputType[] inputTypes)
     {
         ID = ShapeID.NextID;
         AccessTag = accessTag;

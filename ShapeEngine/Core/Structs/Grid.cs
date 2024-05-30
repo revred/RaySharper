@@ -352,7 +352,7 @@ public readonly struct Grid : IEquatable<Grid>
     
     public Coordinates IndexToCoordinates(int index)
     {
-        if (!IsValid) return new();
+        if (!IsValid || index < 0) return new();
         
         if (!IsTopToBottomFirst)
         {

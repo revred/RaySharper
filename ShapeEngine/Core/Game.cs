@@ -1,6 +1,4 @@
 
-using System.Numerics;
-using System.Runtime.InteropServices;
 using Raylib_cs;
 using ShapeEngine.Color;
 using ShapeEngine.Core.Shapes;
@@ -8,6 +6,8 @@ using ShapeEngine.Core.Structs;
 using ShapeEngine.Input;
 using ShapeEngine.Lib;
 using ShapeEngine.Screen;
+using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace ShapeEngine.Core;
 
@@ -123,8 +123,6 @@ public class Game
     private List<ShapeFlash> shapeFlashes = new();
     private List<DeferredInfo> deferred = new();
     
-    private Vector2 lastControlledMousePosition = new();
-    private bool mouseControlled = false;
     #endregion
 
     public Game(GameSettings gameSettings, WindowSettings windowSettings)

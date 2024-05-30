@@ -283,9 +283,6 @@ namespace Examples.Scenes.ExampleScenes
 
         private readonly Ship ship = new(new Vector2(0f), 30f);
 
-        private Rect slider = new();
-        private Rect sliderFill = new();
-
         private readonly Slider intensitySlider;
         private readonly Slider cameraFollowSlider;
 

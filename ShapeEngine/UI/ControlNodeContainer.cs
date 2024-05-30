@@ -128,7 +128,7 @@ public class ControlNodeContainer : ControlNode
             int count = DisplayCount <= 0 ? DisplayedChildrenCount : DisplayCount;
             for (var i = 0; i < count; i++)
             {
-                if (i < DisplayedChildrenCount)
+                if (i < DisplayedChildrenCount && DisplayedChildren is not null)
                 {
                     stretchFactorTotal += DisplayedChildren[i].ContainerStretch;
                 }
@@ -356,10 +356,11 @@ public class ControlNodeContainer : ControlNode
         if (Grid.IsGrid)
         {
             if (!Grid.IsValid) return;
-            var index = DisplayedChildren.IndexOf(child);
+            var index = DisplayedChildren?.IndexOf(child) ?? -1;
             var coords = Grid.IndexToCoordinates(index);
             var coordsDir = Grid.GetDirection(coords);
-            if ((coordsDir.Vertical != 0 && coordsDir.Vertical == dir.Vertical) || (coordsDir.Horizontal != 0 && coordsDir.Horizontal == dir.Horizontal))
+            if ((coordsDir.Vertical != 0 && coordsDir.Vertical == dir.Vertical) || 
+                (coordsDir.Horizontal != 0 && coordsDir.Horizontal == dir.Horizontal))
             {
                 //left to right setup
                 if (Grid.IsLeftToRightFirst)

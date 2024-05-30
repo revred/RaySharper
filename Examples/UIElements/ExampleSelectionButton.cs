@@ -1,11 +1,9 @@
-﻿using System.Numerics;
-using Examples.Scenes;
-using Examples.Scenes.ExampleScenes;
-using Raylib_cs;
+﻿using Examples.Scenes;
 using ShapeEngine.Core.Structs;
-using ShapeEngine.UI;
 using ShapeEngine.Lib;
 using ShapeEngine.Text;
+using ShapeEngine.UI;
+using System.Numerics;
 
 namespace Examples.UIElements
 {
@@ -109,11 +107,10 @@ namespace Examples.UIElements
                 {
                     pressDelayTimer = PressDelay;
                 }
-                else
-                {
-                    GAMELOOP.GoToScene(Scene);
-                }
-                
+                //else // Unreachable Code
+                //{
+                //    GAMELOOP.GoToScene(Scene);
+                //}
             }
         }
 

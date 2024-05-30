@@ -1,15 +1,15 @@
-using ShapeEngine.Core;
-using ShapeEngine.Lib;
-using ShapeEngine.Screen;
-using System.Numerics;
 using Examples.PayloadSystem;
 using Raylib_cs;
 using ShapeEngine.Color;
+using ShapeEngine.Core;
 using ShapeEngine.Core.Collision;
 using ShapeEngine.Core.Interfaces;
-using ShapeEngine.Core.Structs;
 using ShapeEngine.Core.Shapes;
+using ShapeEngine.Core.Structs;
 using ShapeEngine.Input;
+using ShapeEngine.Lib;
+using ShapeEngine.Screen;
+using System.Numerics;
 using Size = ShapeEngine.Core.Structs.Size;
 
 namespace Examples.Scenes.ExampleScenes;
@@ -580,7 +580,7 @@ public class EndlessSpaceCollision : ExampleScene
     private class Ship : CollisionObject, ICameraFollowTarget
     {
 
-        public event Action? OnKilled;
+        public event Action? OnCoKilled = null;
         
         public static readonly uint CollisionLayer = BitFlag.GetFlagUint(3);
         private Triangle hull;
@@ -659,7 +659,7 @@ public class EndlessSpaceCollision : ExampleScene
                             {
                                 collider.Enabled = false;
                                 Kill();
-                                OnKilled?.Invoke();
+                                OnCoKilled?.Invoke();
                             }
                         }
                         
@@ -1906,10 +1906,11 @@ public class EndlessSpaceCollision : ExampleScene
         follower = new(0, 300, 500);
         camera.Follower = follower;
         ship = new(new Vector2(0f), ShipSize);
-        ship.OnKilled += OnShipKilled;
+        ship.OnCoKilled += OnShipKilled;
         
         var minigunStats = new AutogunStats(250, 2, 20, 800, MathF.PI / 15, AutogunStats.TargetingType.Closest);
         var minigunBulletStats = new BulletStats(12, 1250, 15, 0.75f);
+        ArgumentNullException.ThrowIfNull(CollisionHandler);
         minigun = new(CollisionHandler, minigunStats, minigunBulletStats, Colors.PcCold);
         
         var cannonStats = new AutogunStats(20, 4, 4f, 1750, MathF.PI / 24, AutogunStats.TargetingType.LowestHp);

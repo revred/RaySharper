@@ -854,8 +854,8 @@ namespace Examples.Scenes.ExampleScenes
             // DrawInputDeviceInfo(ui.Area);
         }
 
-        private Vector2 lastMouseDelta = new();
-        private Vector2 lastMouseWheel = new();
+        //private Vector2 lastMouseDelta = new();
+        //private Vector2 lastMouseWheel = new();
         protected override void OnDrawUIExample(ScreenInfo ui)
         {
             // Vector2 uiSize = ui.Area.Size;

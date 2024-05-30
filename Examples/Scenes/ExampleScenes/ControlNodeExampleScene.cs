@@ -199,8 +199,6 @@ namespace Examples.Scenes.ExampleScenes
         private readonly ControlNodeNavigator navigator;
         private readonly ControlNodeTestContainer container;
 
-        private readonly ControlNodeButton optionButton;
-
         private readonly ControlNodeContainer buttonContainer;
         // private readonly EventTester eventTester;
 
