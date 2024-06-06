@@ -10,6 +10,7 @@ using ShapeEngine.Core.Structs;
 using ShapeEngine.Core.Shapes;
 using ShapeEngine.Input;
 using Color = System.Drawing.Color;
+using ShapeEngine.Core.Collision;
 
 namespace Examples.Scenes.ExampleScenes
 {
@@ -46,6 +47,11 @@ namespace Examples.Scenes.ExampleScenes
         {
             Title = "Camera Example";
 
+            var nextStaticShapeMb = new InputTypeMouseButton(ShapeMouseButton.MIDDLE);
+            var nextStaticShapeKb = new InputTypeKeyboardButton(ShapeKeyboardButton.T);
+            nextStaticShape = new(nextStaticShapeKb);
+            staticShape = CreateShape(new(), 150);
+
             var cameraHorizontalKB = new InputTypeKeyboardButtonAxis(ShapeKeyboardButton.A, ShapeKeyboardButton.D);
             var cameraHorizontalGP = new InputTypeGamepadAxis(ShapeGamepadAxis.LEFT_X, 0.1f, ModifierKeyOperator.Or, GameloopExamples.ModifierKeyGamepadReversed);
             // var cameraHorizontalGP2 = new InputTypeGamepadButtonAxis(ShapeGamepadButton.LEFT_FACE_LEFT, ShapeGamepadButton.LEFT_FACE_RIGHT, 0f, ModifierKeyOperator.Or, GameloopExamples.ModifierKeyGamepad2);
@@ -69,7 +75,7 @@ namespace Examples.Scenes.ExampleScenes
             camera = GAMELOOP.Camera;
             //boundaryRect = new(new Vector2(0, -45), new Vector2(1800, 810), new Vector2(0.5f));
 
-            for (int i = 0; i < 250; i++)
+            for (int i = 0; i < 0; i++)
             {
                 //Vector2 pos = SRNG.randVec2(0, 5000);
                 Vector2 pos = universe.GetRandomPointInside();
@@ -99,6 +105,12 @@ namespace Examples.Scenes.ExampleScenes
             // }
             HandleCameraPosition(dt);
             HandleCameraRotation(dt);
+            nextStaticShape.Gamepad = gamepad;
+            nextStaticShape.Update(dt);
+            if (nextStaticShape.State.Pressed)
+            {
+                NextStaticShape();
+            }
         }
         
         private void HandleCameraRotation(float dt)
@@ -151,15 +163,47 @@ namespace Examples.Scenes.ExampleScenes
                 pillar.Draw();
             }
 
+            staticShape.Draw(Colors.Highlight.ChangeBrightness(-0.3f));
+
             var c = Colors.Cold; // new ColorRgba(Color.CornflowerBlue);
             float f = camera.ZoomFactor;
-            ShapeDrawing.DrawCircle(camera.BasePosition, 8f * f, c);
-            ShapeDrawing.DrawCircleLines(camera.BasePosition, 64 * f, 2f * f, c);
-            Segment hor = new(camera.BasePosition - new Vector2(3000 * f, 0), camera.BasePosition + new Vector2(3000 * f, 0));
-            hor.Draw(2f * f, c);
-            Segment ver = new(camera.BasePosition - new Vector2(0, 3000 * f), camera.BasePosition + new Vector2(0, 3000 * f));
-            ver.Draw(2f * f, c);
+            //ShapeDrawing.DrawCircle(camera.BasePosition, 8f * f, c);
+            //ShapeDrawing.DrawCircleLines(camera.BasePosition, 64 * f, 2f * f, c);
+            //Segment hor = new(camera.BasePosition - new Vector2(3000 * f, 0), camera.BasePosition + new Vector2(3000 * f, 0));
+           // hor.Draw(2f * f, c);
+            //Segment ver = new(camera.BasePosition - new Vector2(0, 3000 * f), camera.BasePosition + new Vector2(0, 3000 * f));
+           // ver.Draw(2f * f, c);
         }
+        private abstract class Shape
+        {
+            public abstract void Move(Vector2 newPosition);
+            public abstract void Draw(ColorRgba color);
+            public abstract ShapeType GetShapeType();
+            public string GetName()
+            {
+                switch (GetShapeType())
+                {
+                    case ShapeType.Rect: return "Rect";
+                }
+
+                return "Invalid Shape";
+            }
+        }
+        private const float LineThickness = 4f;
+        private Shape staticShape;
+        private InputAction nextStaticShape;
+        private class RectShape : Shape
+        {
+            public Rect Rect;
+            public RectShape(Vector2 pos, float size) =>
+                Rect = new(pos, new(size * 2, size * 2), new Vector2(0.5f));
+            public override void Move(Vector2 newPosition) =>
+                Rect = Rect.ChangePosition(newPosition - Rect.Center);
+            public override void Draw(ColorRgba color) =>
+                Rect.DrawLines(LineThickness, color);
+            public override ShapeType GetShapeType() => ShapeType.Rect;
+        }
+
         protected override void OnDrawGameUIExample(ScreenInfo ui)
         {
             
@@ -169,6 +213,8 @@ namespace Examples.Scenes.ExampleScenes
         {
             var bottomCenter = GAMELOOP.UIRects.GetRect("bottom center");
             DrawInputText(bottomCenter);
+            var curDevice = ShapeInput.CurrentInputDeviceType;
+            var nextStaticText = nextStaticShape.GetInputTypeDescription(curDevice, true, 1, false);
         }
         
         private void DrawInputText(Rect rect)
@@ -204,6 +250,11 @@ namespace Examples.Scenes.ExampleScenes
             // font.DrawText(sbInfo.ToString(), top, 1f, new Vector2(0.5f, 0.5f), ColorLight);
             // font.DrawText(sbCamera.ToString(), bottom, 1f, new Vector2(0.5f, 0.5f), ColorLight);
         }
+        private void NextStaticShape(float size = 300f) =>
+            staticShape = CreateShape(new(), size);
+
+        private Shape CreateShape(Vector2 pos, float size) =>
+            new RectShape(pos, size);
     }
 
 }
